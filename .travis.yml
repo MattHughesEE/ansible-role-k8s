@@ -1,0 +1,35 @@
+---
+sudo: required
+language: python
+services: docker
+
+before_install:
+  - sudo apt-get -qq update
+
+install:
+  - pip install molecule docker
+
+env:
+  global:
+    - ROLE_NAME: k8s
+  matrix:
+    - DIST_IMAGE: antongorkovenko/molecule-amazonlinux:2
+      DIST_IMAGE_INIT_CMD: /usr/local/bin/cmd.sh
+    - DIST_IMAGE: antongorkovenko/molecule-centos:7
+      DIST_IMAGE_INIT_CMD: /usr/local/bin/cmd.sh
+    - DIST_IMAGE: antongorkovenko/molecule-ubuntu:16.04
+    - DIST_IMAGE: antongorkovenko/molecule-ubuntu:18.04
+    - DIST_IMAGE: antongorkovenko/molecule-debian:9.11
+    - DIST_IMAGE: antongorkovenko/molecule-debian:10.1
+
+before_script:
+  # Use actual Ansible Galaxy role name for the project directory.
+  - cd ..
+  - mv ansible-role-$ROLE_NAME antongorkovenko.$ROLE_NAME
+  - cd antongorkovenko.$ROLE_NAME
+
+script:
+  - molecule test
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

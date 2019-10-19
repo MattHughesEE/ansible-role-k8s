@@ -1,0 +1,27 @@
+---
+docker_edition: "ce"
+docker_package: "docker-{{ docker_edition }}"
+docker_packages:
+  - "{{ docker_package }}"
+  - "{{ docker_package }}-cli"
+  - containerd.io
+
+kubernetes_packages:
+  - kubelet
+  - kubeadm
+  - kubectl
+
+# docker_repo:
+# docker_key:
+# kubernetes_repo:
+# kubernetes_key:
+
+pod_network_cidr: 192.168.0.0/16
+pod_network_driver_config: "https://docs.projectcalico.org/v3.8/manifests/calico.yaml"
+
+master_node_ip: 0.0.0.0
+
+node_name: "k8s.local"
+
+# roles: master, worker, base
+node_role: "base"

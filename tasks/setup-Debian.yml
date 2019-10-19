@@ -1,0 +1,77 @@
+---
+- name: Install packages that allow apt to be used over HTTPS
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: true
+  vars:
+    packages:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+
+- name: Add Docker repo key
+  apt_key:
+    url: "{{ docker_key }}"
+    state: present
+
+- name: Add Docker APT repository
+  apt_repository:
+    repo: "{{ docker_repo }}"
+    state: present
+
+- name: Install docker and its dependecies
+  apt:
+    name: "{{ docker_packages }}"
+    state: present
+    update_cache: true
+  notify:
+    - docker status
+
+- name: Add kube user to docker group
+  user:
+    name: kube
+    group: docker
+
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: "{{ item }}"
+    fstype: swap
+    state: absent
+  with_items:
+    - swap
+    - none
+
+- name: Disable swap
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
+- name: Add an apt signing key for Kubernetes
+  apt_key:
+    url: "{{ kubernetes_key }}"
+    state: present
+
+- name: Add Kubernetes YUM repository
+  apt_repository:
+    repo: "{{ kubernetes_repo }}"
+    state: present
+    filename: kubernetes.list
+
+- name: Install Kubernetes binaries
+  apt:
+    name: "{{ kubernetes_packages }}"
+    state: present
+    update_cache: true
+
+# - name: Configure node ip
+#   lineinfile:
+#     path: /etc/default/kubelet
+#     line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
+
+# - name: restart kubelet
+#   service:
+#     name: kubelet
+#     enabled: true
+#     state: restarted

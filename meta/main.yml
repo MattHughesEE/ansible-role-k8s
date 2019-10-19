@@ -1,0 +1,37 @@
+---
+galaxy_info:
+  role_name: k8s
+  author: Anton Gorkovenko
+  description: "Kubernetes: setup master and worker nodes"
+
+  license: BSD
+
+  min_ansible_version: 2.4
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - trusty
+        - xenial
+        - zesty
+        - artful
+        - bionic
+        - cosmic
+        - disco dingo
+    - name: Debian
+      versions:
+        - jessie
+        - stretch
+        - buster
+    - name: EL
+      versions:
+        - 7
+    - name: Amazon Linux 2
+      versions:
+        - any
+
+  galaxy_tags:
+    - kubernetes
+    - k8s
+
+dependencies: []

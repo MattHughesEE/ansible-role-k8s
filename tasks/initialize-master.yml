@@ -1,0 +1,37 @@
+---
+- name: Pulling images required for setting up a Kubernetes cluster
+  command: kubeadm config images pull
+  args:
+    creates: /home/kube/cluster_initialized.txt
+
+- name: Initialize the Kubernetes cluster using kubeadm
+  shell: kubeadm init --apiserver-advertise-address="{{ master_node_ip }}" \
+                      --apiserver-cert-extra-sans="{{ master_node_ip }}" \
+                      --node-name {{ node_name }} \
+                      --pod-network-cidr={{ pod_network_cidr }} >> /home/kube/cluster_initialized.txt
+  args:
+    creates: /home/kube/cluster_initialized.txt
+
+- name: Setup kubeconfig for kube user
+  command: "{{ item }}"
+  with_items:
+    - mkdir -p /home/kube/.kube
+    - cp -i /etc/kubernetes/admin.conf /home/kube/.kube/config
+    - chown kube:kube /home/kube/.kube/config
+  args:
+    creates: /home/kube/.kube/config
+
+- name: Install calico pod network
+  become: true
+  become_user: kube
+  shell: kubectl apply -f {{ pod_network_driver_config }} >> /home/kube/pod_network_setup.txt
+  args:
+    creates: /home/kube/pod_network_setup.txt
+
+- name: Generate join command
+  command: kubeadm token create --print-join-command
+  register: join_command
+  changed_when: false
+
+- name: Copy join command to local file
+  local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
