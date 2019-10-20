@@ -14,17 +14,17 @@
 
 - name: Add Docker repo key
   apt_key:
-    url: "{{ docker_key }}"
+    url: "{{ k8s_docker_key }}"
     state: present
 
 - name: Add Docker APT repository
   apt_repository:
-    repo: "{{ docker_repo }}"
+    repo: "{{ k8s_docker_repo }}"
     state: present
 
 - name: Install docker and its dependecies
   apt:
-    name: "{{ docker_packages }}"
+    name: "{{ k8s_docker_packages }}"
     state: present
     update_cache: true
   notify:
@@ -50,25 +50,25 @@
 
 - name: Add an apt signing key for Kubernetes
   apt_key:
-    url: "{{ kubernetes_key }}"
+    url: "{{ k8s_kubernetes_key }}"
     state: present
 
 - name: Add Kubernetes YUM repository
   apt_repository:
-    repo: "{{ kubernetes_repo }}"
+    repo: "{{ k8s_kubernetes_repo }}"
     state: present
     filename: kubernetes.list
 
 - name: Install Kubernetes binaries
   apt:
-    name: "{{ kubernetes_packages }}"
+    name: "{{ k8s_kubernetes_packages }}"
     state: present
     update_cache: true
 
 # - name: Configure node ip
 #   lineinfile:
 #     path: /etc/default/kubelet
-#     line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
+#     line: KUBELET_EXTRA_ARGS=--node-ip={{ k8s_node_ip }}
 
 # - name: restart kubelet
 #   service:

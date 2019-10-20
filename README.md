@@ -25,7 +25,7 @@ Example Playbook
     - hosts: master
       become: true
       vars:
-        - node_role: master
+        - k8s_node_role: master
       roles:
         - antongorkovenko.k8s
 

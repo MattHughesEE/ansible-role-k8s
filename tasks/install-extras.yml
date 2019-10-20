@@ -1,0 +1,20 @@
+---
+- name: Install Helm
+  shell: "curl -L https://git.io/get_helm.sh | bash"
+  args:
+    executable: /bin/bash
+  when: k8s_extras_install_helm
+  changed_when: false
+
+- name: Copy tiller-sa.ym
+  template:
+    src: tiller-sa.yml.j2
+    dest: "/tmp/tiller-sa.yml"
+  when: k8s_extras_install_helm
+
+- name: Initialize Helm
+  command: "{{ item }}"
+  with_items:
+    - kubectl apply -f /tmp/tiller-sa.yml
+    - helm init --service-account tiller
+  when: k8s_extras_install_helm

@@ -1,5 +1,5 @@
 ---
-__docker_repo: "deb https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} stable"
-__docker_key: "https://download.docker.com/linux/ubuntu/gpg"
-__kubernetes_repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
-__kubernetes_key: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+__k8s_docker_repo: "deb https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} stable"
+__k8s_docker_key: "https://download.docker.com/linux/ubuntu/gpg"
+__k8s_kubernetes_repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
+__k8s_kubernetes_key: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"

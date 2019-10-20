@@ -13,7 +13,9 @@
   when: ansible_os_family == "Debian"
 
 - include_tasks: initialize-master.yml
-  when: node_role == "master"
+  when: k8s_node_role == "master"
 
 - include_tasks: initialize-worker.yml
-  when: node_role == "worker"
+  when: k8s_node_role == "worker"
+
+- include_tasks: install-extras.yml

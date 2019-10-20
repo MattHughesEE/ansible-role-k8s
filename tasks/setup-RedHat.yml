@@ -1,31 +1,40 @@
 ---
-- name: Add Docker YUM repository
-  get_url:
-    url: "{{ docker_repo }}"
-    dest: /etc/yum.repos.d/docer-ce.repo
-    validate_certs: false
-
-- name: install Docker
+- name: Install pre-requirements
   yum:
-    name: "{{ docker_packages }}"
+    name:
+      - openssl
+      - which
+      - tar
     state: present
     update_cache: true
 
-- name: start Docker
+- name: Add Docker YUM repository
+  get_url:
+    url: "{{ k8s_docker_repo }}"
+    dest: /etc/yum.repos.d/docer-ce.repo
+    validate_certs: false
+
+- name: Install Docker
+  yum:
+    name: "{{ k8s_docker_packages }}"
+    state: present
+    update_cache: true
+
+- name: Start Docker
   service:
     name: docker
     state: started
 
-- name: check SELinux
+- name: Check SELinux
   command: getenforce
   register: selinux_status
   changed_when: false
 
-- name: disable SELinux
+- name: Disable SELinux
   command: setenforce 0
   when: selinux_status.stdout_lines[0] == "enforced"
 
-- name: disable SELinux on reboot
+- name: Disable SELinux on reboot
   selinux:
     state: disabled
   when: selinux_status.stdout_lines[0] == "enforced"
@@ -51,14 +60,14 @@
   changed_when: false
   ignore_errors: true
 
-- name: ensure net.bridge.bridge-nf-call-ip6tables is set to 1
+- name: Ensure net.bridge.bridge-nf-call-ip6tables is set to 1
   sysctl:
     name: net.bridge.bridge-nf-call-ip6tables
     value: 1
     state: present
   ignore_errors: true
 
-- name: ensure net.bridge.bridge-nf-call-iptables is set to 1
+- name: Ensure net.bridge.bridge-nf-call-iptables is set to 1
   sysctl:
     name: net.bridge.bridge-nf-call-iptables
     value: 1
@@ -69,17 +78,17 @@
   yum_repository:
     name: Kubernetes
     description: Kubernetes YUM repository
-    baseurl: "{{ kubernetes_repo }}"
-    gpgkey: "{{ kubernetes_key }}"
+    baseurl: "{{ k8s_kubernetes_repo }}"
+    gpgkey: "{{ k8s_kubernetes_key }}"
     gpgcheck: true
 
 - name: Install Kubernetes binaries
   yum:
-    name: "{{ kubernetes_packages }}"
+    name: "{{ k8s_kubernetes_packages }}"
     state: present
     update_cache: true
 
-- name: start kubelet
+- name: Start kubelet
   service:
     name: kubelet
     enabled: true

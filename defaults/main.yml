@@ -1,27 +1,29 @@
 ---
-docker_edition: "ce"
-docker_package: "docker-{{ docker_edition }}"
-docker_packages:
-  - "{{ docker_package }}"
-  - "{{ docker_package }}-cli"
+k8s_docker_edition: "ce"
+k8s_docker_package: "docker-{{ k8s_docker_edition }}"
+k8s_docker_packages:
+  - "{{ k8s_docker_package }}"
+  - "{{ k8s_docker_package }}-cli"
   - containerd.io
 
-kubernetes_packages:
+k8s_kubernetes_packages:
   - kubelet
   - kubeadm
   - kubectl
 
-# docker_repo:
-# docker_key:
-# kubernetes_repo:
-# kubernetes_key:
+# k8s_docker_repo:
+# k8s_docker_key:
+# k8s_kubernetes_repo:
+# k8s_kubernetes_key:
 
-pod_network_cidr: 192.168.0.0/16
-pod_network_driver_config: "https://docs.projectcalico.org/v3.8/manifests/calico.yaml"
+k8s_pod_network_cidr: 192.168.0.0/16
+k8s_pod_network_driver_config: "https://docs.projectcalico.org/v3.8/manifests/calico.yaml"
 
-master_node_ip: 0.0.0.0
+k8s_master_node_ip: 0.0.0.0
 
-node_name: "k8s.local"
+k8s_node_name: "k8s.local"
 
 # roles: master, worker, base
-node_role: "base"
+k8s_node_role: "base"
+
+k8s_extras_install_helm: false

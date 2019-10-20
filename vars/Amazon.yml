@@ -1,4 +1,4 @@
 ---
-__docker_repo: "https://download.docker.com/linux/centos/docker-{{ docker_edition }}.repo"
-__kubernetes_repo: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64"
-__kubernetes_key: "https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg"
+__k8s_docker_repo: "https://download.docker.com/linux/centos/docker-{{ k8s_docker_edition }}.repo"
+__k8s_kubernetes_repo: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64"
+__k8s_kubernetes_key: "https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg"

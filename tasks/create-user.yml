@@ -1,14 +1,14 @@
 ---
-- name: create the 'kube' user
+- name: Create the 'kube' user
   user: name=kube append=yes state=present createhome=yes shell=/bin/bash
 
-- name: allow 'kube' to have passwordless sudo
+- name: Allow 'kube' to have passwordless sudo
   lineinfile:
     dest: /etc/sudoers
     line: 'kube ALL=(ALL) NOPASSWD: ALL'
     validate: 'visudo -cf %s'
 
-# - name: set up authorized keys for the kube user
+# - name: Set up authorized keys for the kube user
 #   authorized_key: user=kube key="{{item}}"
 #   with_file:
 #     - ~/.ssh/id_rsa.pub

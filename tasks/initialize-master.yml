@@ -5,10 +5,10 @@
     creates: /home/kube/cluster_initialized.txt
 
 - name: Initialize the Kubernetes cluster using kubeadm
-  shell: kubeadm init --apiserver-advertise-address="{{ master_node_ip }}" \
-                      --apiserver-cert-extra-sans="{{ master_node_ip }}" \
-                      --node-name {{ node_name }} \
-                      --pod-network-cidr={{ pod_network_cidr }} >> /home/kube/cluster_initialized.txt
+  shell: kubeadm init --apiserver-advertise-address="{{ k8s_master_node_ip }}" \
+                      --apiserver-cert-extra-sans="{{ k8s_master_node_ip }}" \
+                      --node-name {{ k8s_node_name }} \
+                      --pod-network-cidr={{ k8s_pod_network_cidr }} >> /home/kube/cluster_initialized.txt
   args:
     creates: /home/kube/cluster_initialized.txt
 
@@ -24,7 +24,7 @@
 - name: Install calico pod network
   become: true
   become_user: kube
-  shell: kubectl apply -f {{ pod_network_driver_config }} >> /home/kube/pod_network_setup.txt
+  shell: kubectl apply -f {{ k8s_pod_network_driver_config }} >> /home/kube/pod_network_setup.txt
   args:
     creates: /home/kube/pod_network_setup.txt
 
