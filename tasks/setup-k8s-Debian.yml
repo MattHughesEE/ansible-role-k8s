@@ -1,0 +1,22 @@
+---
+- name: Add an apt signing key for Kubernetes
+  apt_key:
+    url: "{{ k8s_kubernetes_repo_key }}"
+    state: present
+
+- name: Add Kubernetes YUM repository
+  apt_repository:
+    repo: "{{ k8s_kubernetes_repo }}"
+    state: present
+    filename: kubernetes.list
+
+- name: Install Kubernetes binaries
+  apt:
+    name: "{{ k8s_kubernetes_packages }}"
+    state: present
+    update_cache: true
+
+# - name: Configure node ip
+#   lineinfile:
+#     path: /etc/default/kubelet
+#     line: KUBELET_EXTRA_ARGS=--node-ip={{ k8s_node_ip }}

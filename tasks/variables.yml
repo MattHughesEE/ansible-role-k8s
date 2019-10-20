@@ -21,10 +21,20 @@
 
 - name: Define k8s_kubernetes_repo
   set_fact:
-    k8s_kubernetes_repo: "{{ __k8s_kubernetes_repo }}"
+    k8s_kubernetes_repo: "{{ __k8s_kubernetes_repo | default('') }}"
   when: k8s_kubernetes_repo is not defined
 
-- name: Define k8s_kubernetes_key
+- name: Define k8s_kubernetes_repo_key
   set_fact:
-    k8s_kubernetes_key: "{{ __k8s_kubernetes_key }}"
-  when: k8s_kubernetes_key is not defined
+    k8s_kubernetes_repo_key: "{{ __k8s_kubernetes_repo_key | default('') }}"
+  when: k8s_kubernetes_repo_key is not defined
+
+- name: Define k8s_update_iptable_bridge_rules
+  set_fact:
+    k8s_update_iptable_bridge_rules: "{{ __k8s_update_iptable_bridge_rules | default(false) }}"
+  when: k8s_update_iptable_bridge_rules is not defined
+
+- name: Define k8s_update_selinux
+  set_fact:
+    k8s_update_selinux: "{{ __k8s_update_selinux | default(false) }}"
+  when: k8s_update_selinux is not defined

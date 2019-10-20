@@ -1,4 +1,6 @@
 ---
+# k8s_docker_repo:
+# k8s_docker_key:
 k8s_docker_edition: "ce"
 k8s_docker_package: "docker-{{ k8s_docker_edition }}"
 k8s_docker_packages:
@@ -6,15 +8,18 @@ k8s_docker_packages:
   - "{{ k8s_docker_package }}-cli"
   - containerd.io
 
+# k8s_kubernetes_repo:
+# k8s_kubernetes_repo_key:
 k8s_kubernetes_packages:
   - kubelet
   - kubeadm
   - kubectl
 
-# k8s_docker_repo:
-# k8s_docker_key:
-# k8s_kubernetes_repo:
-# k8s_kubernetes_key:
+k8s_copy_auth_key: false
+k8s_copy_auth_key_path: "~/.ssh/id_rsa.pub"
+
+# k8s_update_iptable_bridge_rules:
+# k8s_update_selinux:
 
 k8s_pod_network_cidr: 192.168.0.0/16
 k8s_pod_network_driver_config: "https://docs.projectcalico.org/v3.8/manifests/calico.yaml"

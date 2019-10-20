@@ -1,0 +1,59 @@
+---
+- name: Check SELinux
+  command: getenforce
+  register: selinux_status
+  changed_when: false
+  when: k8s_update_selinux
+
+- name: Disable SELinux
+  command: setenforce 0
+  when: k8s_update_selinux and selinux_status.stdout_lines[0] == "enforced"
+
+- name: Disable SELinux on reboot
+  selinux:
+    state: disabled
+  when: k8s_update_selinux and selinux_status.stdout_lines[0] == "enforced"
+
+- name: Disable SWAP
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+#
+# - name: Check /etc/fstab exists
+#  stat:
+#    path: /etc/fstab
+#  register: fstab
+#
+# - name: Disable SWAP in fstab
+#  replace:
+#    path: /etc/fstab
+#    regexp: "^(.+?\sswap\s+sw\s+.*)$"
+#    replace: "# \1"
+#  when: fstab.stat.exists
+
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: "{{ item }}"
+    fstype: swap
+    state: absent
+  with_items:
+    - swap
+    - none
+
+- name: modprobe br_netfilter
+  command: modprobe br_netfilter
+  changed_when: false
+  when: k8s_update_iptable_bridge_rules
+
+- name: Ensure net.bridge.bridge-nf-call-ip6tables is set to 1
+  sysctl:
+    name: net.bridge.bridge-nf-call-ip6tables
+    value: 1
+    state: present
+  when: k8s_update_iptable_bridge_rules
+
+- name: Ensure net.bridge.bridge-nf-call-iptables is set to 1
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
+    state: present
+  when: k8s_update_iptable_bridge_rules

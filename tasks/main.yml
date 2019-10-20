@@ -3,13 +3,25 @@
 
 - include_tasks: create-user.yml
 
-- include_tasks: setup-Amazon.yml
+- include_tasks: setup-docker-Amazon.yml
   when: ansible_distribution == "Amazon"
 
-- include_tasks: setup-RedHat.yml
+- include_tasks: setup-docker-RedHat.yml
   when: ansible_os_family == "RedHat" and ansible_distribution != "Amazon"
 
-- include_tasks: setup-Debian.yml
+- include_tasks: setup-docker-Debian.yml
+  when: ansible_os_family == "Debian"
+
+- include_tasks: setup-prepare-RedHat.yml
+  when: ansible_os_family == "RedHat"
+
+- include_tasks: setup-prepare-Debian.yml
+  when: ansible_os_family == "Debian"
+
+- include_tasks: setup-k8s-RedHat.yml
+  when: ansible_os_family == "RedHat"
+
+- include_tasks: setup-k8s-Debian.yml
   when: ansible_os_family == "Debian"
 
 - include_tasks: initialize-master.yml

@@ -1,0 +1,16 @@
+---
+- name: Add Docker YUM repository
+  get_url:
+    url: "{{ k8s_docker_repo }}"
+    dest: /etc/yum.repos.d/docer-ce.repo
+
+- name: Install Docker
+  yum:
+    name: "{{ k8s_docker_packages }}"
+    state: present
+    update_cache: true
+
+- name: Start Docker
+  service:
+    name: docker
+    state: started

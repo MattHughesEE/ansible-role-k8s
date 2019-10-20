@@ -3,5 +3,8 @@
   hosts: all
   become: true
 
+  vars:
+    - k8s_update_iptable_bridge_rules: false
+
   roles:
     - role: antongorkovenko.k8s

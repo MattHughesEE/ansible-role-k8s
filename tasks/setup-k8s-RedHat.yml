@@ -1,0 +1,20 @@
+---
+- name: Add Kubernetes YUM repository
+  yum_repository:
+    name: Kubernetes
+    description: Kubernetes YUM repository
+    baseurl: "{{ k8s_kubernetes_repo }}"
+    gpgkey: "{{ k8s_kubernetes_repo_key }}"
+    gpgcheck: true
+
+- name: Install Kubernetes binaries
+  yum:
+    name: "{{ k8s_kubernetes_packages }}"
+    state: present
+    update_cache: true
+
+- name: Start kubelet
+  service:
+    name: kubelet
+    enabled: true
+    state: started

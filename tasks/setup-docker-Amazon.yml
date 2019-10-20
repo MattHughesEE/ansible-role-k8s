@@ -1,0 +1,17 @@
+---
+- name: Enable Docker repository
+  command: "amazon-linux-extras install -y epel docker"
+  changed_when: false
+
+- name: Install Docker
+  yum:
+    name:
+      - docker
+      - containerd
+    state: present
+    update_cache: true
+
+- name: Start Docker
+  service:
+    name: docker
+    state: started
