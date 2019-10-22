@@ -4,13 +4,25 @@
   args:
     creates: /home/kube/cluster_initialized.txt
 
-- name: Initialize the Kubernetes cluster using kubeadm
+- name: Initialize the Kubernetes cluster using kubeadm (Simple)
   shell: kubeadm init --apiserver-advertise-address="{{ k8s_master_node_ip }}" \
                       --apiserver-cert-extra-sans="{{ k8s_master_node_ip }}" \
                       --node-name {{ k8s_node_name }} \
                       --pod-network-cidr={{ k8s_pod_network_cidr }} >> /home/kube/cluster_initialized.txt
   args:
     creates: /home/kube/cluster_initialized.txt
+  when: not k8s_controlplane_enable
+
+- name: Initialize the Kubernetes cluster using kubeadm (Clustered Control Plane)
+  shell: kubeadm init --apiserver-advertise-address="{{ k8s_master_node_ip }}" \
+                      --apiserver-cert-extra-sans="{{ k8s_master_node_ip }}" \
+                      --node-name {{ k8s_node_name }} \
+                      --pod-network-cidr={{ k8s_pod_network_cidr }} \
+                      --control-plane-endpoint "{{ k8s_controlplane_loadbalancer_ip }}:{{ k8s_controlplane_loadbalancer_port }}"
+                      --upload-certs >> /home/kube/cluster_initialized.txt
+  args:
+    creates: /home/kube/cluster_initialized.txt
+  when: k8s_controlplane_enable
 
 - name: Setup kubeconfig for kube user
   command: "{{ item }}"
@@ -35,3 +47,11 @@
 
 - name: Copy join command to local file
   local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
+
+- name: Generate master join command
+  command: kubeadm init phase upload-certs --upload-certs
+  register: control_plane_cert_secret
+  changed_when: false
+
+- name: Copy master join command
+  local_action: copy content="{{ join_command.stdout_lines[0] }} --control-plane --certificate-key {{ control_plane_cert_secret.stdout_lines[0] }}" dest="./control_plane_cert_secret"

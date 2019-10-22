@@ -28,7 +28,10 @@ k8s_master_node_ip: 0.0.0.0
 
 k8s_node_name: "k8s.local"
 
-# roles: master, worker, base
 k8s_node_role: "base"
+
+k8s_controlplane_enable: false
+k8s_controlplane_loadbalancer_ip: 0.0.0.0
+k8s_controlplane_loadbalancer_port: 6443
 
 k8s_extras_install_helm: false

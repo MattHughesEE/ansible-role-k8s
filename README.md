@@ -34,7 +34,7 @@ Role Variables
 |k8s_pod_network_driver_config|Pod network driver config<br> Default (Calico): https://docs.projectcalico.org/v3.8/manifests/calico.yaml|
 |k8s_master_node_ip|Master node IP|
 |k8s_node_name|Node hostname<br> Default: k8s.local|
-|k8s_node_role|Node role: base, master, worker|
+|k8s_node_role|Node role: base, main-master, backup-master, worker|
 |k8s_extras_install_helm|Install Helm|
 
 Example Playbook
