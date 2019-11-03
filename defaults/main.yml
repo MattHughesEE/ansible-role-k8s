@@ -30,6 +30,12 @@ k8s_node_name: "k8s.local"
 
 k8s_node_role: "base"
 
+k8s_cloud_provider: 'none'
+k8s_aws_cloud_cni_driver_yamls:
+  - https://github.com/aws/amazon-vpc-cni-k8s/blob/master/config/v1.5/aws-k8s-cni.yaml
+  - https://github.com/aws/amazon-vpc-cni-k8s/blob/master/config/v1.5/calico.yaml
+  - https://github.com/aws/amazon-vpc-cni-k8s/blob/master/config/v1.5/cni-metrics-helper.yaml
+
 k8s_controlplane_enable: false
 k8s_controlplane_loadbalancer_ip: 0.0.0.0
 k8s_controlplane_loadbalancer_port: 6443

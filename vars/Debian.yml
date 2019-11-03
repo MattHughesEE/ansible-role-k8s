@@ -5,3 +5,4 @@ __k8s_kubernetes_repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
 __k8s_kubernetes_repo_key: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
 __k8s_update_iptable_bridge_rules: false
 __k8s_update_selinux: false
+__k8s_kubelet_config: /etc/default/kubelet

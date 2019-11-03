@@ -1,36 +1,56 @@
 ---
 - include_tasks: variables.yml
 
-- include_tasks: create-user.yml
+- name: Create user
+  block:
+    - include_tasks: create-user.yml
+  tags:
+    - create-user
 
-- include_tasks: setup-docker-Amazon.yml
-  when: ansible_distribution == "Amazon"
+- name: Install docker
+  block:
+    - include_tasks: setup-docker-Amazon.yml
+      when: ansible_distribution == "Amazon"
+    - include_tasks: setup-docker-RedHat.yml
+      when: ansible_os_family == "RedHat" and ansible_distribution != "Amazon"
+    - include_tasks: setup-docker-Debian.yml
+      when: ansible_os_family == "Debian"
+  tags:
+    - docker-setup
 
-- include_tasks: setup-docker-RedHat.yml
-  when: ansible_os_family == "RedHat" and ansible_distribution != "Amazon"
+- name: Prepare system
+  block:
+    - include_tasks: setup-prepare-RedHat.yml
+      when: ansible_os_family == "RedHat"
+    - include_tasks: setup-prepare-Debian.yml
+      when: ansible_os_family == "Debian"
+  tags:
+    - pre-requirements
 
-- include_tasks: setup-docker-Debian.yml
-  when: ansible_os_family == "Debian"
+- name: Install k8s
+  block:
+    - include_tasks: setup-k8s-RedHat.yml
+      when: ansible_os_family == "RedHat"
+    - include_tasks: setup-k8s-Debian.yml
+      when: ansible_os_family == "Debian"
+  tags:
+    - k8s-setup
 
-- include_tasks: setup-prepare-RedHat.yml
-  when: ansible_os_family == "RedHat"
+- name: Initialize node
+  block:
+    - include_tasks: initialize-main-master.yml
+      when: k8s_node_role == "main-master"
+    - include_tasks: initialize-main-master-network.yml
+      when: k8s_node_role == "main-master"
+    - include_tasks: initialize-backup-master.yml
+      when: k8s_node_role == "backup-master"
+    - include_tasks: initialize-worker.yml
+      when: k8s_node_role == "worker"
+  tags:
+    - initialization
 
-- include_tasks: setup-prepare-Debian.yml
-  when: ansible_os_family == "Debian"
-
-- include_tasks: setup-k8s-RedHat.yml
-  when: ansible_os_family == "RedHat"
-
-- include_tasks: setup-k8s-Debian.yml
-  when: ansible_os_family == "Debian"
-
-- include_tasks: initialize-main-master.yml
-  when: k8s_node_role == "main-master"
-
-- include_tasks: initialize-backup-master.yml
-  when: k8s_node_role == "backup-master"
-
-- include_tasks: initialize-worker.yml
-  when: k8s_node_role == "worker"
-
-- include_tasks: install-extras.yml
+- name: Install extras
+  block:
+    - include_tasks: install-extras.yml
+  tags:
+    - extras

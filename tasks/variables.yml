@@ -38,3 +38,8 @@
   set_fact:
     k8s_update_selinux: "{{ __k8s_update_selinux | default(false) }}"
   when: k8s_update_selinux is not defined
+
+- name: Define k8s_kubelet_config
+  set_fact:
+    k8s_kubelet_config: "{{ __k8s_kubelet_config | default('') }}"
+  when: k8s_kubelet_config is not defined

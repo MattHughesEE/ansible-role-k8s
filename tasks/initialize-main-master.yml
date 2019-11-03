@@ -33,13 +33,6 @@
   args:
     creates: /home/kube/.kube/config
 
-- name: Install calico pod network
-  become: true
-  become_user: kube
-  shell: kubectl apply -f {{ k8s_pod_network_driver_config }} >> /home/kube/pod_network_setup.txt
-  args:
-    creates: /home/kube/pod_network_setup.txt
-
 - name: Generate join command
   command: kubeadm token create --print-join-command
   register: join_command

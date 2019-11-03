@@ -1,0 +1,24 @@
+---
+- name: Install pod network driver
+  become: true
+  become_user: kube
+  shell: kubectl apply -f {{ k8s_pod_network_driver_config }} >> /home/kube/pod_network_setup.txt
+  args:
+    creates: /home/kube/pod_network_setup.txt
+  when: cloud_provider != 'aws'
+
+- name: Install pod network driver (AWS)
+  become: true
+  become_user: kube
+  shell: kubectl apply -f {{ item }} >> /home/kube/pod_network_setup.txt
+  with_items: "{{ k8s_aws_cloud_cni_driver_yamls }}"
+  args:
+    creates: /home/kube/pod_network_setup.txt
+  when: cloud_provider == 'aws'
+
+- name: Register pod network driver (AWS)
+  lineinfile:
+    path: "{{ k8s_kubelet_config }}"
+    line: KUBELET_EXTRA_ARGS=$KUBELET_EXTRA_ARGS --network-plugin=cni --node-ip=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
+  changed_when: false
+  when: cloud_provider == 'aws'
