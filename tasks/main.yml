@@ -46,6 +46,7 @@
       when: k8s_node_role == "backup-master"
     - include_tasks: initialize-worker.yml
       when: k8s_node_role == "worker"
+    - include_tasks: initialize-configure-kubelet.yml
   tags:
     - initialization
 
